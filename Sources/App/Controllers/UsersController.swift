@@ -11,22 +11,24 @@ struct UsersController: RouteCollection {
         usersRouter.get(User.parameter, "acronyms", use: getAcronymsHandle)
     }
     
-}
-
-func getAcronymsHandle(_ req: Request) throws -> Future<[Acronym]> {
-    return try req.parameters.next(User.self).flatMap(to: [Acronym].self) { user in
-        try user.acronym.query(on: req).all()
+    func getAcronymsHandle(_ req: Request) throws -> Future<[Acronym]> {
+        return try req.parameters.next(User.self).flatMap(to: [Acronym].self) { user in
+            try user.acronym.query(on: req).all()
+        }
     }
+    
+    func createHandle(_ req: Request, user: User) throws -> Future<User> {
+        return user.save(on: req)
+    }
+    
+    func getAllHandle(_ req: Request) throws -> Future<[User]> {
+        return User.query(on: req).all()
+    }
+    
+    func getHandle(_ req: Request) throws -> Future<User> {
+        return try req.parameters.next(User.self)
+    }
+    
 }
 
-func createHandle(_ req: Request, user: User) throws -> Future<User> {
-    return user.save(on: req)
-}
 
-func getAllHandle(_ req: Request) throws -> Future<[User]> {
-    return User.query(on: req).all()
-}
-
-func getHandle(_ req: Request) throws -> Future<User> {
-    return try req.parameters.next(User.self)
-}

@@ -22,11 +22,9 @@ extension Acronym {
     var categories: Siblings<Acronym, Category, AcronymCategoryPivot> {
         return siblings()
     }
-    
 }
 
 extension Acronym: Migration {
-    
     static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
         return Database.create(self, on: connection) { builder in
             try addProperties(to: builder)
